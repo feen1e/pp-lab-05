@@ -1,7 +1,7 @@
 /*
 Autor: Dominik Kaczmarek
 Grupa: Pn/P 13:15
-Temat: Laboratorium 5, zadanie 1
+Temat: Laboratorium 5, zadanie 2
 Data: 27.12.2023 r.
 */
 
@@ -67,18 +67,18 @@ int main() {
                 if (buf[0] >= 97 && buf[0] <= 122) buf[0] -= 32;
                 AddName(buf, wsk);
                 break;
-           case 2:
-               int numer;
-               printf("Wprowadz numer elementu do usuniecia: ");
-               scanf("%d", &numer);
-               RemoveName(numer-1, wsk);
-               break;
-           case 3:
-               printf ("Wprowadz imie do usuniecia: ");
-               fgets (buf, 81, stdin);
-               if (buf[0] >= 97 && buf[0] <= 122) buf[0] -= 32;
+            case 2:
+                int numer;
+                printf("Wprowadz numer elementu do usuniecia: ");
+                scanf("%d", &numer);
+                RemoveName(numer-1, wsk);
+                break;
+            case 3:
+                printf ("Wprowadz imie do usuniecia: ");
+                fgets (buf, 81, stdin);
+                if (buf[0] >= 97 && buf[0] <= 122) buf[0] -= 32;
                 RemoveName(buf, wsk);
-               break;
+                break;
             case 4:
                 PrintAllNames(wsk);
                 break;
@@ -109,23 +109,33 @@ int main() {
         PrintAllNames(wsk);
     }*/
     for(int i = 0; wsk[i] != NULL; i++)
-        free(wsk[i]); // zwolnienie pamięci zajmowanej przez poszczegolne imiona
-    free(wsk); // zwolnienie pamięci zajmowanej przez tablicę wskaźników
+        delete wsk[i]; // zwolnienie pamięci zajmowanej przez poszczegolne imiona
+    delete wsk; // zwolnienie pamięci zajmowanej przez tablicę wskaźników
     return 0;
 }
 
 void InitTab(char**& wsk) {
-    wsk = (char**) malloc(sizeof(char*)); // zaalokowanie pamięci na tablicę wskaźników
+    char** tab = new char*; // utworzenie tablicy wskaźników
+    wsk = tab; // przypisanie adresu tablicy do wskaźnika
     *wsk = NULL;
+    //wsk = (char**) malloc(sizeof(char*));
+    //*wsk = NULL;
 }
 
 void AddName(char* buf, char**& wsk) {
     int poz = 0; // pozycja zawierająca NULL
     while(wsk[poz] != NULL) poz++;
-    wsk = (char**) realloc(wsk,(poz+2)*sizeof(char *)); // powiększenie tablicy wskaźników
+    char** temp = new char*[poz+2];
+    for(int i = 0; i < poz; i++) {
+        temp[i] = wsk[i];
+    }
+    delete wsk;
+    wsk = temp;
     wsk[poz+1] = NULL;
-    wsk[poz] = strdup(buf); // skopiowanie tekstu z bufora
+    wsk[poz] = strdup(buf);
     printf("\nImie zostalo dodane.\n");
+     //wsk = (char**) realloc(wsk,(poz+2)*sizeof(char *)); // powiększenie tablicy wskaźników
+     // skopiowanie tekstu z bufora
 }
 
 void RemoveName(int nr, char **&wsk) {
@@ -137,12 +147,17 @@ void RemoveName(int nr, char **&wsk) {
     }
     else {
         printf("\nUsunieto imie nr %d.\n", nr+1);
-        free(wsk[nr]); // zwolnienie pamieci zajmowanej przez usuwane imie
         while (wsk[nr] != NULL) {
             nr++;
             wsk[nr-1] = wsk[nr];
         }
-        wsk = (char**)realloc(wsk,(rozmiar)*sizeof(char *)); // zmniejszenie tablicy wskaźników
+        char** temp = new char*[rozmiar];
+        for(int i = 0; i < rozmiar; i++) {
+            temp[i] = wsk[i];
+        }
+        delete wsk;
+        wsk = temp;
+        //wsk = (char**)realloc(wsk,(rozmiar)*sizeof(char *));
         //printf("Adres tablicy dynamicznej: %p\n", wsk);
     }
 }
@@ -162,8 +177,13 @@ void RemoveName(char *buf, char **&wsk) {
             //printf("przed %s       po %s", wsk[poz-1], wsk[poz]);
             wsk[poz-1] = wsk[poz];
         }
-        wsk = (char**)realloc(wsk,(rozmiar)*sizeof(char *));
-        //wsk[poz] = NULL;
+        char** temp = new char*[rozmiar];
+        for(int i = 0; i < rozmiar; i++)
+            temp[i] = wsk[i];
+        delete wsk;
+        wsk = temp;
+    wsk = (char**)realloc(wsk,(rozmiar)*sizeof(char *));
+    wsk[poz] = NULL;
     }
     //printf("Adres tablicy dynamicznej: %p\n", wsk);*/
 }
