@@ -132,7 +132,10 @@ void AddName(char* buf, char**& wsk) {
     delete wsk;
     wsk = temp;
     wsk[poz+1] = NULL;
-    wsk[poz] = strdup(buf);
+    unsigned long long dlugosc = strlen(buf);
+    char* imie = new char[dlugosc+1];
+    strcpy(imie, buf);
+    wsk[poz] = imie;
     printf("\nImie zostalo dodane.\n");
      //wsk = (char**) realloc(wsk,(poz+2)*sizeof(char *)); // powiększenie tablicy wskaźników
      // skopiowanie tekstu z bufora
